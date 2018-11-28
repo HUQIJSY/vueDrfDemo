@@ -1,6 +1,16 @@
 {% extends 'web/public/layout.html' %}
 {% block app-page %}
   <template>
+    <div class="row">
+      <div class="col-xs-2">
+        <input type="text" class="form-control" placeholder="标题，出版社" v-model="search">
+      </div>
+      <div class="col-xs-1">
+        <button class="btn btn-success" @click="searchData()">查询</button>
+      </div>
+    </div>
+    <br>
+    <hr>
     {# 表格栏 #}
     <b-table :items="items" :fields="fields">
       <template slot="title" slot-scope="data">
@@ -30,7 +40,9 @@
         items: [],
         totalRows: 0,
         perPage: 2,
-        currentPage: 1
+        currentPage: 1,
+        // 搜索字段值
+        search: '',
       },
       mounted() {
         this.initData();
@@ -47,7 +59,7 @@
       methods: {
         initData() {
           var vm = this;
-          axios.get(`/api/books/?limit=${this.perPage}&offset=${this.offset}`).then(function (resp) {
+          axios.get(`/api/books/?limit=${this.perPage}&offset=${this.offset}&search=${this.search}`).then(function (resp) {
             vm.fields = resp.data.fields;
             vm.items = resp.data.result.results;
             vm.totalRows = resp.data.result.count;
@@ -55,7 +67,7 @@
         },
         initDeleteBtn() {
           var vm = this;
-          $("#app").on("click", "button", function () {
+          $("#app table").on("click", "button", function () {
             const pk = $(this).attr("pk");
             axios.delete(`/api/books/${pk}`).then(function (resp) {
               vm.initData();
@@ -68,6 +80,9 @@
             vm.currentPage = $(this).find("a").attr("aria-posinset");
             vm.initData();
           })
+        },
+        searchData() {
+          this.initData()
         }
       }
     })

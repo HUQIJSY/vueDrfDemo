@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Date: 2018/11/27
 
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
@@ -13,6 +14,9 @@ from ..serializers import curd
 class BookView(ListAPIView):
     queryset = models.Book.objects.all()
     serializer_class = curd.BookSerializer
+
+    filter_backends = (SearchFilter, )
+    search_fields = ("title", "publish__name", )
 
     fields = [
         {
@@ -53,13 +57,15 @@ class BookView(ListAPIView):
             paginated_data = self.paginator.get_paginated_data(serializer.data)
             return Response({
                 "fields": self.fields,
-                "result": paginated_data
+                "result": paginated_data,
+                "search_fields": self.search_fields
             })
 
         serializer = self.get_serializer(queryset, many=True)
         return Response({
             "fields": self.fields,
-            "result": serializer.data
+            "result": serializer.data,
+            "search_fields": self.search_fields
         })
 
 
