@@ -44,6 +44,10 @@ python manage.py migrate
 python manage.py runserver 0.0.0.0:9527
 ```
 
+## 访问首页示例
+
+<img src="http://47.94.172.250:33334/static/frontend/index/71D4E9C7-37A2-4F60-AC98-485361832AA8_1543401343.9106383.jpeg">
+
 # 常见问题
 
 ## 第一次执行这条语句报No changes detected
